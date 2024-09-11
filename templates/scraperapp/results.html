@@ -1,0 +1,349 @@
+{% load static %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <title>GradScraper</title>
+
+    <link rel="shortcut icon" href="{% static 'img/logo-transparent.png' %}">
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome/css/all.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+    .fixed-size-card {
+        width: 100%;
+        max-width: 350px;
+        height: 350px;
+        overflow: hidden;
+    }
+    </style>
+    
+    </head>
+    <body>
+
+    <div class="main-wrapper">
+
+    <div class="header">
+
+    <div class="header-left">
+    <a href="/index" class="logo">
+    <img src="{% static 'img/logo-no-background.png' %}" alt="Logo">
+    </a>
+    <a href="/index" class="logo logo-small">
+    <img src="{% static 'img/logo-no-background.png' %}" alt="Logo" width="30" height="30">
+    </a>
+    <a href="javascript:void(0);" id="toggle_btn">
+    <span class="bar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+    </span>
+    </a>
+    </div>
+
+
+    <div class="sidebar" id="sidebar">
+    <div class="sidebar-contents">
+    <div id="sidebar-menu" class="sidebar-menu">
+    <div class="mobile-show">
+    <div class="offcanvas-menu">
+    <div class="user-info align-center bg-theme text-center">
+    <span class="lnr lnr-cross  text-white" id="mobile_btn_close">X</span>
+    <a href="javascript:void(0)" class="d-block menu-style text-white">
+    <div class="user-avatar d-inline-block mr-3">
+    <img src="{% static 'img/profiles/avatar-18.jpg' %}" alt="user avatar" class="rounded-circle" width="50">
+    </div>
+    </a>
+    </div>
+    </div>
+    <div class="sidebar-input">
+    <div class="top-nav-search">
+    <form>
+    <input type="text" class="form-control" placeholder="Search here">
+    <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+    </form>
+    </div>
+    </div>
+    </div>
+    <ul>
+    <li>
+    <a href="/index"><img src="{% static 'img/home.svg' %}" alt="sidebar_img"> <span>Dashboard</span></a>
+    </li>
+    <li class="active">
+    <a href="#"><img src="{% static 'img/employee.svg' %}" alt="sidebar_img"><span> Students</span></a>
+    </li>
+    <li>
+    <a href="/resultsbycompany"><img src="{% static 'img/company.svg' %}" alt="sidebar_img"> <span> Companies</span></a>
+    </li>
+    <li>
+    <a href="/history"><img src="{% static 'img/calendar.svg' %}" alt="sidebar_img"> <span>History</span></a>
+    </li>
+    <li>
+    <a href="/settings"><img src="{% static 'img/settings.svg' %}" alt="sidebar_img"><span>Settings</span></a>
+    </li>
+    </ul>
+    <ul class="logout">
+    <li>
+    <a href="/logout"><img src="{% static 'img/logout.svg' %}" alt="sidebar_img"><span>Log out</span></a>
+    </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+
+
+    <div class="page-wrapper">
+    <div class="content container-fluid">
+    <div class="row">
+    <div class="col-xl-12 col-sm-12 col-12">
+    <div class="breadcrumb-path mb-4">
+    <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/index"><img src="{% static 'img/dash.png' %}" class="mr-2" alt="breadcrumb" />Home</a>
+    </li>
+    
+    <li class="breadcrumb-item active"> Students</li>
+    </ul>
+    <h3>Students</h3>
+    </div>
+    </div>
+    <div class="col-xl-12 col-sm-12 col-12 mb-4">
+    <div class="head-link-set">
+    <ul>
+    <li><a class="active" href="#">All</a></li>
+    <li><a href="/resultsbycompany">Companies</a></li> 
+    </ul>
+    
+    <a class="btn-add" data-toggle="modal" data-target="#startScrapingModal">Scrape more</a>
+    
+    <div class="modal fade" id="startScrapingModal" tabindex="-1" aria-labelledby="startScrapingLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="startScrapingLabel">Start Scraping</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="startScrapingForm" method="POST" action="{% url 'start_scraping' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="label" class="form-label">Scraping Session Label</label>
+                            <input type="text" class="form-control" id="label" name="label" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="st_num" class="form-label">Number of People to Scrape</label>
+                            <input type="number" class="form-control" id="st_num" name="st_num" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="year" class="form-label">Year of Study</label>
+                            <input type="number" class="form-control" id="year" name="year" required>
+                        </div>
+                        <div class="text-center" style="margin-right: -20px margin-left: -20px;">
+                            <button type="submit" class="btn btn-primary btn-lg">Start</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    
+    </div>
+
+
+    
+    
+    <div class="col-xl-12 col-sm-12 col-12 mb-4">
+    <div class="row">
+    <div class="col-xl-10 col-sm-8 col-12 ">
+    <label class="employee_count"></label>
+    </div>
+    
+    <div class="col-xl-1 col-sm-2 col-12 ">
+    <a href="" class="btn-view grid-view"><i data-feather="grid"></i> </a>
+    </div>
+    <div class="col-xl-1 col-sm-2 col-12 ">
+    <a href="#" class="btn-view list-view active"><i data-feather="list"></i> </a>
+    </div>
+    </div>
+    </div>
+    
+    <div class="col-xl-12 col-sm-12 col-12 mb-4">
+    <div class="card">
+        
+    <div class="table-heading">
+    <h2>Students</h2>
+    <br>
+    <div class="col-xl-2 col-sm-4 col-12">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="orderDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Order by Name
+            </button>
+            <div class="dropdown-menu" aria-labelledby="orderDropdown">
+                <a class="dropdown-item" href="?order=asc">A-Z</a>
+                <a class="dropdown-item" href="?order=desc">Z-A</a>
+            </div>
+        </div>
+        
+    </div>
+    </div>
+
+    <form id="searchForm" method="GET" style="display: flex; width: 300px; margin-left: 40px;">
+        <input type="text" class="form-control" name="q" placeholder="Search here" id="searchInput" style="flex: 1; border-radius: 0;">
+        <button class="btn" type="submit" style="border-radius: 0;"><i class="fas fa-search"></i></button>
+    </form>
+    <br>
+    <div class="table-responsive" id="table-block">
+        <div id="table-container">
+            <!-- Table will be inserted here -->
+        </div>
+    </div>
+    </div>
+    <div class="card card-container grid-view" id="grid-block" style="display:none;">
+        <div class="card-body">
+            <div class="row" id="card-container">
+                
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+    </div>
+
+
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+    <script src="{% static 'js/feather.min.js' %}"></script>
+
+    <script src="{% static 'plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+    <script src="{% static 'plugins/select2/js/select2.min.js' %}"></script>
+
+    <script src="{% static 'js/script.js' %}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var searchForm = document.getElementById('searchForm');
+            var searchInput = document.getElementById('searchInput');
+            var jsonData = {{ data | safe }}; // Retrieve JSON data sent from Django view
+            var buttons = document.querySelectorAll('.btn-view');
+            var tableContainer = document.getElementById('table-container');
+            var cardContainer = document.getElementById('card-container');
+            var tableblock = document.getElementById('table-block');
+            var cardblock = document.getElementById('grid-block');
+            function jsonToTable(jsonData) {
+                var tableHtml = '<table class="table table-bordered">';
+                tableHtml += '<thead><tr><th>Name</th><th>Email</th><th>Title</th><th>Location</th><th>Company</th></tr></thead>';
+                tableHtml += '<tbody>';
+                
+                jsonData.forEach(function(person) {
+                    tableHtml += '<tr>';
+                    tableHtml += '<td><div class="table-img"><a href="'+ person.url +'" target="_blank"><img src="'+ person.img_url +'" alt="profile" class="img-table" ' + 'onerror="this.onerror=null;this.src=\'https://i.imgur.com/mUtO8vh.jpg\';" />' + '<label>'+ person.name +'</label></a></div></td>';
+                    tableHtml += '<td>' + person.email + '</td>';
+                    tableHtml += '<td>' + person.title + '</td>';
+                    tableHtml += '<td>' + person.location + '</td>';
+                    tableHtml += '<td>' + person.company__name + '</td>';
+                    tableHtml += '</tr>';
+                });
+                
+                var count = jsonData.length;
+                tableHtml += '</tbody></table>';
+                return { count: count, tableHtml: tableHtml };
+            }
+            function jsonToCards(jsonData) {
+                var cardHtml = '';
+                jsonData.forEach(function(person) {
+                    cardHtml += '<div class="col-xl-4 col-sm-12 col-12">';
+                    cardHtml += '<div class="employee_grid fixed-size-card">';
+                    cardHtml += '<a href="'+ person.url +'" target="_blank"><img src="' + person.img_url + '" alt="profile" class="card-img"' + 'onerror="this.onerror=null;this.src=\'https://i.imgur.com/mUtO8vh.jpg\';" />' +'</a>';
+                    cardHtml += '<h5 class="card-title">' + person.name + '</h5>';
+                    cardHtml += '<label class="card-label">' + person.title + '</label>';
+                    cardHtml += '<label class="card-label">' + person.company__name + '</label>';
+                    cardHtml += '<a class="card-company" href="mailto:' + person.email + '"><span class="email" >' + person.email + '</span></a>';
+                    cardHtml += '</div>';
+                    cardHtml += '</div>';
+
+                });
+    
+                return cardHtml;
+            }
+
+
+            //mta3 ajax search
+            searchForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                var query = searchInput.value;
+                var order = "{{ order }}"; // Get the current order
+        
+                // Send an AJAX GET request to filter data
+                $.ajax({
+                    url: "{% url 'results' %}",
+                    type: 'GET',
+                    data: {
+                        q: query,
+                        order: order
+                    },
+                    success: function(response) {
+                        var jsonData = response.data;
+                        
+                        // Update table and grid views with the new data
+                        var tableData = jsonToTable(jsonData);
+                        var griddata = jsonToCards(jsonData);
+                        tableContainer.innerHTML = tableData.tableHtml;
+                        cardContainer.innerHTML = griddata;
+                        document.querySelector('.employee_count').textContent = tableData.count + " Students";
+                    },
+                    error: function(xhr) {
+                        console.log("Error: " + xhr.statusText);
+                    }
+                });
+            });
+
+
+
+            //tadl between grid and table view
+            var tableData = jsonToTable(jsonData);
+            var griddata = jsonToCards(jsonData);
+            cardContainer.innerHTML = griddata;
+            tableContainer.innerHTML = tableData.tableHtml;
+            var grid 
+                buttons.forEach(function(button) {
+                    button.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        
+                        buttons.forEach(function(btn) {
+                            btn.classList.remove('active');
+                        });
+        
+                        button.classList.add('active');
+
+                        if (button.classList.contains('list-view')) {
+                            tableblock.style.display = 'block'; 
+                            cardblock.style.display = 'none'; 
+                        } else if (button.classList.contains('grid-view')) {
+                            tableblock.style.display = 'none';
+                            cardblock.style.display = 'block';
+                        }
+                    });
+                });
+            document.querySelector('.employee_count').textContent = tableData.count + " Students";
+        });
+    </script>
+
+    </body>
+    </html>

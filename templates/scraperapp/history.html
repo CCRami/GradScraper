@@ -1,0 +1,199 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+<title>GradScraper</title>
+<link rel="shortcut icon" href="{% static 'img/logo-transparent.png' %}">
+
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+<link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+
+<link rel="stylesheet" href="{% static 'plugins/fontawesome/css/fontawesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/fontawesome/css/all.min.css' %}">
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<style>
+    .fixed-size-card {
+        width: 100%;
+        max-width: 350px;
+        height: 350px;
+        overflow: hidden;
+    }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+
+<div class="header">
+
+<div class="header-left">
+<a href="/index" class="logo">
+<img src="{% static 'img/logo-no-background.png' %}" alt="Logo">
+</a>
+<a href="/index" class="logo logo-small">
+<img src="{% static 'img/logo-no-background.png' %}" alt="Logo" width="30" height="30">
+</a>
+<a href="javascript:void(0);" id="toggle_btn">
+<span class="bar-icon">
+<span></span>
+<span></span>
+<span></span>
+</span>
+</a>
+</div>
+
+
+<div class="sidebar" id="sidebar">
+<div class="sidebar-contents">
+<div id="sidebar-menu" class="sidebar-menu">
+<div class="mobile-show">
+<div class="offcanvas-menu">
+<div class="user-info align-center bg-theme text-center">
+<span class="lnr lnr-cross  text-white" id="mobile_btn_close">X</span>
+<a href="javascript:void(0)" class="d-block menu-style text-white">
+<div class="user-avatar d-inline-block mr-3">
+<img src="{% static 'img/profiles/avatar-18.jpg' %}" alt="user avatar" class="rounded-circle" width="50">
+</div>
+</a>
+</div>
+</div>
+<div class="sidebar-input">
+<div class="top-nav-search">
+<form>
+<input type="text" class="form-control" placeholder="Search here">
+<button class="btn" type="submit"><i class="fas fa-search"></i></button>
+</form>
+</div>
+</div>
+</div>
+<ul>
+<li>
+<a href="/index"><img src="{% static 'img/home.svg' %}" alt="sidebar_img"> <span>Dashboard</span></a>
+</li>
+<li >
+<a href="/results"><img src="{% static 'img/employee.svg' %}" alt="sidebar_img"><span> Students</span></a>
+</li>
+<li>
+<a href="/resultsbycompany"><img src="{% static 'img/company.svg' %}" alt="sidebar_img"> <span> Companies</span></a>
+</li>
+<li class="active">
+<a href="#"><img src="{% static 'img/calendar.svg' %}" alt="sidebar_img"> <span>History</span></a>
+</li>
+<li>
+<a href="/settings"><img src="{% static 'img/settings.svg' %}" alt="sidebar_img"><span>Settings</span></a>
+</li>
+</ul>
+<ul class="logout">
+<li>
+<a href="/logout"><img src="{% static 'img/logout.svg' %}" alt="sidebar_img"><span>Log out</span></a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div class="page-wrapper">
+    <div class="content container-fluid">
+    <div class="row">
+    <div class="col-xl-12 col-sm-12 col-12 mb-4">
+    <div class="breadcrumb-path ">
+    <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/index"><img src="{% static 'img/dash.png' %}" class="mr-2" alt="breadcrumb">Home</a></li>
+    </li>
+    <li class="breadcrumb-item active"> History</li>
+    </ul>
+    <h3>History</h3>
+    </div>
+    </div>
+    <div class="col-xl-12 col-sm-12 col-12 mb-4">
+    <div class="head-link-set">
+    <ul>
+    <li><a class="active" href="#">Overview</a></li>
+    </ul>
+    
+    </div>
+    </div>
+    <div class="col-xl-12 col-sm-12 col-12 ">
+    <div class="card">
+    <div class="card-header">
+    <h2 class="card-titles">Scraping Sessions Details</h2>
+    </div>
+    <div class="table-responsive">
+        <table class="table custom-table no-footer">
+            <thead>
+                <tr>
+                    <th>Label</th>
+                    <th>Started at</th>
+                    <th>Ended at</th>
+                    <th>Number of Grads Scraped</th>
+                    <th>Approx. Year of graduation</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in sessions %}
+                <tr>
+                    <td><label>{{ session.label }}</label></td>
+                    <td><label>{{ session.start_time }}</label></td>
+                    <td><label>{{ session.end_time }}</label></td>
+                    <td><label>{{ session.st_num }}</label></td>
+                    <td><label>{{ session.year }}</label></td>
+                    <td>
+                        <div class="actionset">
+                            <label><a class="action_label4" data-toggle="modal" data-target="#delete">Delete <i data-feather="trash-2"></i></a></label>
+                        </div>
+                    </td>
+                </tr>
+                <div class="customize_popup">
+                    <div class="modal fade" id="delete" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header text-center border-0">
+                                    <h5 class="modal-title" id="staticBackdropLabel1">Are You Sure You Want to Delete?</h5>
+                                </div>
+                                <div class="modal-footer text-center">
+                                    <form action="{% url 'delete_session' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="label" value="{{ session.label }}">
+                                        <button type="submit" class="btn btn-primary">Delete</button>
+                                    </form>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% endfor %}
+            </tbody>
+        </table>
+    
+        
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<script src="{% static 'js/feather.min.js' %}"></script>
+
+<script src="{% static 'plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+<script src="{% static 'plugins/select2/js/select2.min.js' %}"></script>
+
+<script src="{% static 'js/script.js' %}"></script>
+
+
+</body>
+</html>

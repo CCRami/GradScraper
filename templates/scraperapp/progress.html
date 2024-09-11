@@ -1,0 +1,246 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+<title>GradScraper</title>
+
+<link rel="shortcut icon" href="{% static 'img/logo-transparent.png' %}">
+
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+
+<link rel="stylesheet" href="{% static 'plugins/fontawesome/css/fontawesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/fontawesome/css/all.min.css' %}">
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<div class="main-wrapper">
+
+<div class="header">
+
+<div class="header-left">
+<a href="/index" class="logo">
+<img src="{% static 'img/logo-no-background.png' %}" alt="Logo">
+</a>
+<a href="/index" class="logo logo-small">
+<img src="{% static 'img/logo-no-background.png' %}" alt="Logo" width="30" height="30">
+</a>
+<a href="javascript:void(0);" id="toggle_btn">
+<span class="bar-icon">
+<span></span>
+<span></span>
+<span></span>
+</span>
+</a>
+</div>
+
+
+<div class="sidebar" id="sidebar">
+<div class="sidebar-contents">
+<div id="sidebar-menu" class="sidebar-menu">
+<div class="mobile-show">
+<div class="offcanvas-menu">
+<div class="user-info align-center bg-theme text-center">
+<span class="lnr lnr-cross  text-white" id="mobile_btn_close">X</span>
+<a href="javascript:void(0)" class="d-block menu-style text-white">
+<div class="user-avatar d-inline-block mr-3">
+<img src="{% static 'img/profiles/avatar-18.jpg' %}" alt="user avatar" class="rounded-circle" width="50">
+</div>
+</a>
+</div>
+</div>
+<div class="sidebar-input">
+<div class="top-nav-search">
+<form>
+<input type="text" class="form-control" placeholder="Search here">
+<button class="btn" type="submit"><i class="fas fa-search"></i></button>
+</form>
+</div>
+</div>
+</div>
+<ul>
+<li>
+<a href="/index"><img src="{% static 'img/home.svg' %}" alt="sidebar_img"> <span>Dashboard</span></a>
+</li>
+<li class="active">
+<a href="#"><img src="{% static 'img/employee.svg' %}" alt="sidebar_img"><span> Students</span></a>
+</li>
+<li>
+<a href="/resultsbycompany"><img src="{% static 'img/company.svg' %}" alt="sidebar_img"> <span> Companies</span></a>
+</li>
+<li>
+<a href="/history"><img src="{% static 'img/calendar.svg' %}" alt="sidebar_img"> <span>History</span></a>
+</li>
+<li>
+<a href="/settings"><img src="{% static 'img/settings.svg' %}" alt="sidebar_img"><span>Settings</span></a>
+</li>
+</ul>
+<ul class="logout">
+<li>
+<a href="/logout"><img src="{% static 'img/logout.svg' %}" alt="sidebar_img"><span>Log out</span></a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+
+<div class="page-wrapper">
+<div class="content container-fluid">
+<div class="row">
+<div class="col-xl-12 col-sm-12 col-12">
+<div class="breadcrumb-path mb-4">
+<ul class="breadcrumb">
+<li class="breadcrumb-item"><a href="/index"><img src="{% static 'img/dash.png' %}" class="mr-2" alt="breadcrumb" />Home</a>
+</li>
+<li class="breadcrumb-item active">Scraping Session</li>
+</ul>
+<h3>Scraping Session</h3>
+</div>
+</div>
+<div class="col-xl-12 col-sm-12 col-12 mb-4">
+<div class="head-link-set">
+<ul>
+<li><a class="active" href="#">Overview</a></li>
+</ul>
+<a class="btn-add" href="/results">Cancel Scraping</a>
+</div>
+</div>
+
+<h1>Scraping in Progress</h1>
+
+<div id="progress-info" style="width: 100%; margin-top:20px;"><p></p></div>
+
+<div id="progress-bar-container" style="width: 100%; margin-bottom:20px; background-color: #f3f3f3;">
+    <div id="progress-bar" style="width: 0; height: 30px;  background-color: #4caf50;"></div>
+</div>
+
+<div class="col-xl-12 col-sm-12 col-12 ">
+<div class="card">
+<div class="card-header">
+<h2 class="card-titles">Details</h2>
+</div>
+    <div class="table-responsive">
+        <div id="table-container">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Title</th>
+                        <th>Company</th>
+                        <th>Location</th>
+                        <th>Email</th>
+                        <th>Profile</th>
+                    </tr>
+                </thead>
+                <tbody id="scraped-data-table">
+                    <!-- Scraped data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="customize_popup">
+<div class="modal fade" id="delete" tabindex="-1" aria-labelledby="staticBackdropLabels1" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+<div class="modal-header text-centers border-0">
+<h5 class="modal-title text-center" id="staticBackdropLabels1">Are You Sure Want to Delete?</h5>
+</div>
+<div class="modal-footer text-centers">
+<button type="button" class="btn btn-primary">Delete</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<script src="{% static 'js/feather.min.js' %}"></script>
+
+<script src="{% static 'plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+<script src="{% static 'plugins/select2/js/select2.min.js' %}"></script>
+
+<script src="{% static 'js/script.js' %}"></script>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+        function fetchProgress() {
+            $.ajax({
+                url: '/get_progress_data/',  // This URL should point to a Django view that retrieves progress and scraped data from Redis
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Update progress bar
+                    var progressBar = $('#progress-bar');
+                    progressBar.css('width', data.progress + '%');
+
+                    // Update progress information
+                    var progressInfo = $('#progress-info');
+                    progressInfo.text(`Scraped ${data.step} out of ${data.total_steps} profiles (${data.progress.toFixed(2)}%)`);
+
+                    // Update table with scraped data
+                    $('#scraped-data-table').empty();  // Clear the table
+                    $.each(data.scraped_data, function(index, person) {
+                        $('#scraped-data-table').append('<tr><td>' + person.name + '</td><td>' + person.title + '</td><td>' + person.company + '</td><td>' + person.location + '</td><td>' + person.email + '</td><td><a href="' + person.url + '" target="_blank">Profile</a></td></tr>');
+                    });
+                    if (data.progress >= 100) {
+                        console.log("Progress is 100%, sending request to update end time.");  // Debugging statement
+                        $.ajax({
+                            url: '/update_end_time/',  // Django view to update the end time in the XML file
+                            method: 'POST',
+                            headers: {'X-CSRFToken': csrftoken},  // Include the CSRF token in the request
+                            success: function(response) {
+                                console.log("End time updated successfully, redirecting to results.");  // Debugging statement
+                                window.location.href = '/results/';
+                            },
+                            error: function(error) {
+                                console.error("Error updating end time:", error);
+                                // Handle the error if needed
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            setInterval(fetchProgress, 5000);  // Fetch progress every 5 seconds
+        });
+    </script>
+</body>
+</html>
