@@ -18,6 +18,8 @@ from email.mime.text import MIMEText
 import re
 import random
 from urllib.parse import urlparse
+from dotenv import load_dotenv
+
 
 def verify_email(email):
     server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -56,11 +58,14 @@ def scrape_linkedin_task(st_num, year):
     driver = webdriver.Chrome(service=service, options=options)
 
     try:
+        load_dotenv()
+        emaillinkedin = os.getenv("EMAIL")
+        password = os.getenv("PASSWORD")
         driver.get("https://www.linkedin.com/login/")
         elementID = driver.find_element(By.ID, 'username')
-        elementID.send_keys("ramitoubib@hotmail.com") 
+        elementID.send_keys(emaillinkedin) 
         elementID = driver.find_element(By.ID, 'password')
-        elementID.send_keys("toubibrami10")
+        elementID.send_keys(password)
         elementID.submit()
         WebDriverWait(driver, 60).until(EC.url_contains('https://www.linkedin.com/feed/'))
         cookies = driver.get_cookies()
