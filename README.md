@@ -1,4 +1,4 @@
-GradScraper
+![alt text](https://raw.githubusercontent.com/CCRami/GradScraper/main/staticfiles/img/logo-transparent.png)
 =====================
 
 This project is a Django-based web application that allows users to scrape LinkedIn profiles and manage scraped data, focusing on student and employee information. It includes user authentication, secure access, and an interactive dashboard to view results.
@@ -20,18 +20,20 @@ Installation
 1.  **Clone the repository**:
 
     `git clone https://github.com/CCRami/GradScraper.git
+    &&
     cd gradscraper`
 
-2.  **Create a virtual environment** (optional but recommended):
+3.  **Create a virtual environment** (optional but recommended):
 
     `python -m venv venv
+    &&
     source venv/bin/activate  # On Windows use: venv\Scripts\activate`
 
-3.  **Install dependencies**:
+5.  **Install dependencies**:
 
     `pip install -r requirements.txt`
 
-4.  **Set up the database**:
+6.  **Set up the database**:
 
     The project uses PostgreSQL. Update your `settings.py` file with your PostgreSQL configuration, or use SQLite for quick setup.
 
@@ -51,11 +53,11 @@ Installation
     `python manage.py makemigrations
     python manage.py migrate`
 
-5.  **Create a superuser** to access the admin panel:
+7.  **Create a superuser** to access the admin panel:
 
     `python manage.py createsuperuser`
 
-6.  **Run the development server**:
+8.  **Run the development server**:
 
     `python manage.py runserver`
 
