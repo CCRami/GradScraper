@@ -24,9 +24,12 @@ from dotenv import load_dotenv
 def verify_email(email):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
-    server.login("rami.toubib2014@gmail.com", "kngp embc okyp iodi")  # Replace with your email and password
+    load_dotenv()
+    email_key = os.getenv("EMAIL_KEY")
+    smtp_email = os.getenv("SMTP_EMAIL")
+    server.login(smtp_email, email_key) 
     try:
-        server.mail("rami.toubib2014@gmail.com")
+        server.mail(smtp_email)
         code, message = server.rcpt(email) 
         if code == 250:
             print("email success")
@@ -84,7 +87,7 @@ def scrape_linkedin_task(st_num, year):
         year = match.group(1) if match else "unknown"
 
         profiles_per_page = 2  # Number of profiles visible per scroll/page
-        total_scrolls = (st_num // profiles_per_page) + 1  # Calculate the required scrolls
+        total_scrolls = (st_num * profiles_per_page) + 1  # Calculate the required scrolls
 
         last_height = driver.execute_script("return document.body.scrollHeight")
 

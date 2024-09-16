@@ -1,0 +1,9 @@
+Django==4.2
+psycopg2-binary==2.9.6  # For PostgreSQL integration
+celery==5.3.1  # For background tasks
+redis==5.0.0  # For task queue management
+beautifulsoup4==4.12.2  # For HTML parsing
+selenium==4.10.0  # For LinkedIn scraping
+requests==2.31.0  # For handling HTTP requests
+lxml==4.9.3  # For parsing XML/HTML
+python-dotenv==1.0.0  # For loading environment variables
