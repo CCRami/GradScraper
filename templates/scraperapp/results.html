@@ -118,10 +118,10 @@
     <ul>
     <li><a class="active" href="#">All</a></li>
     <li><a href="/resultsbycompany">Companies</a></li> 
+
     </ul>
     
     <a class="btn-add" data-toggle="modal" data-target="#startScrapingModal">Scrape more</a>
-    
     <div class="modal fade" id="startScrapingModal" tabindex="-1" aria-labelledby="startScrapingLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -139,12 +139,12 @@
                             <input type="text" class="form-control" id="label" name="label" required>
                         </div>
                         <div class="mb-3">
-                            <label for="st_num" class="form-label">Number of People to Scrape</label>
-                            <input type="number" class="form-control" id="st_num" name="st_num" required>
+                            <label for="st_num" class="form-label">Number of People to Scrape (<=20)</label>
+                            <input type="number" class="form-control" id="st_num" name="st_num" max="20" required>
                         </div>
                         <div class="mb-3">
-                            <label for="year" class="form-label">Year of Study</label>
-                            <input type="number" class="form-control" id="year" name="year" required>
+                            <label for="year" class="form-label">Year of Study (<=2024)</label>
+                            <input type="number" class="form-control" id="year" name="year" max="2024" min="2003" required>
                         </div>
                         <div class="text-center" style="margin-right: -20px margin-left: -20px;">
                             <button type="submit" class="btn btn-primary btn-lg">Start</button>
@@ -166,6 +166,7 @@
     <div class="row">
     <div class="col-xl-10 col-sm-8 col-12 ">
     <label class="employee_count"></label>
+    
     </div>
     
     <div class="col-xl-1 col-sm-2 col-12 ">
@@ -182,8 +183,17 @@
         
     <div class="table-heading">
     <h2>Students</h2>
+    
     <br>
-    <div class="col-xl-2 col-sm-4 col-12">
+    
+    <div class="col-xl-12 col-sm-12 col-12 mb-4 d-flex align-items-center">
+        <form id="searchForm" method="GET" style="display: flex; width: 300px; margin-right: 20px;">
+            <input type="text" class="form-control" name="q" placeholder="Search here" id="searchInput" style="flex: 1; border-radius: 0;">
+            <button class="btn" type="submit" style="border-radius: 0;">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+    
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="orderDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Order by Name
@@ -193,14 +203,9 @@
                 <a class="dropdown-item" href="?order=desc">Z-A</a>
             </div>
         </div>
-        
-    </div>
+        <a class="btn-addmembers" href="/export" style="margin-left:310px; margin-right:10px;">Export Data</a>
     </div>
 
-    <form id="searchForm" method="GET" style="display: flex; width: 300px; margin-left: 40px;">
-        <input type="text" class="form-control" name="q" placeholder="Search here" id="searchInput" style="flex: 1; border-radius: 0;">
-        <button class="btn" type="submit" style="border-radius: 0;"><i class="fas fa-search"></i></button>
-    </form>
     <br>
     <div class="table-responsive" id="table-block">
         <div id="table-container">

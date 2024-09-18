@@ -27,6 +27,8 @@ from django.contrib.auth import logout
 from django.contrib.auth import login
 from .forms import LoginForm
 from django.contrib.auth.decorators import login_required
+import openpyxl
+from django.http import HttpResponse
 
 def get_progress_data_from_redis(redis_conn):
     scraped_data = redis_conn.get('scraped_data')
@@ -55,15 +57,12 @@ def start_scraping(request):
             year = int(request.POST.get('year'))
             label = request.POST.get('label')
             
-            # Get current datetime for the start time
             start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
-            # Initialize Redis connection and set progress
             redis_conn = Redis(host='localhost', port=6379, db=1)
             redis_conn.set('scraping_progress', json.dumps({'progress': 0, 'step': 0, 'total_steps': st_num}))
             redis_conn.set('scraped_data', json.dumps([]))
 
-            # Save scraping session details to XML
             xml_file = 'scraping_history.xml'
             if not os.path.exists(xml_file):
                 root = ET.Element("scraping_history")
@@ -76,13 +75,13 @@ def start_scraping(request):
             ET.SubElement(session, "st_num").text = str(st_num)
             ET.SubElement(session, "year").text = str(year)
             ET.SubElement(session, "start_time").text = start_time
-            ET.SubElement(session, "end_time").text = ""  # Leave this empty for now
+            ET.SubElement(session, "end_time").text = "" 
             
-            # Save or update the XML file
+    
             tree = ET.ElementTree(root)
             tree.write(xml_file)
 
-            # Start the scraping task
+   
             scrape_linkedin_task.delay(st_num, year)
             return render(request, 'scraperapp/progress.html')
         
@@ -96,11 +95,11 @@ def update_end_time(request):
     if os.path.exists(xml_file):
         tree = ET.parse(xml_file)
         root = tree.getroot()
-        # Find the last session
+
         last_session = root.findall('session')[-1]
-        # Update the end_time
+
         last_session.find('end_time').text = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        # Save the XML file
+
         tree.write(xml_file)
         return JsonResponse({"status": "success"})
     else:
@@ -118,7 +117,6 @@ def get_progress_data(request):
     })
     
 def getdata():
-    # Define the URL to match and the replacement URL
     match_url = "https://media.licdn.com/dms/image/v2/D4D03AQHoHh3c5w12xA/"
     replacement_url = "https://i.imgur.com/mUtO8vh.jpg"
     all_persons_data = Person.objects.all().values('url', 'email', 'name', 'title', 'location', 'company__name', 'img_url')
@@ -149,10 +147,33 @@ def results(request):
     return render(request, 'scraperapp/results.html', {'data': data, 'order': order})
 @login_required
 def resultsbycompany(request):
+
+    order = request.GET.get('order', 'asc')
+    search_query = request.GET.get('q', '')
+
     companies = Company.objects.prefetch_related(
         Prefetch('person_set', queryset=Person.objects.all())
     )
-    return render(request, 'scraperapp/resultsbycompany.html', {'companies': companies})
+
+    if search_query:
+        companies = companies.filter(name__icontains=search_query)
+
+    if order == 'asc':
+        companies = companies.order_by('name')
+    elif order == 'desc':
+        companies = companies.order_by('-name')
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        company_data = [
+            {
+                'name': company.name,
+                'persons': [{'name': person.name, 'email': person.email} for person in company.person_set.all()]
+            }
+            for company in companies
+        ]
+        return JsonResponse({'companies': company_data})
+
+    return render(request, 'scraperapp/resultsbycompany.html', {'companies': companies, 'order': order})
 
 def get_company_members(request):
     company_id = request.GET.get('company_id')
@@ -251,23 +272,21 @@ def settings(request):
 @login_required    
 def delete_session(request):
     label_to_delete = request.POST.get('label')
-    
-    # Parse the XML file
-    tree = ET.parse('scraping_history.xml')  # Update with the correct path
+
+    tree = ET.parse('scraping_history.xml') 
     root = tree.getroot()
     
-    # Find the session to delete
     for session in root.findall('session'):
         label = session.find('label').text
         if label == label_to_delete:
             root.remove(session)
-            tree.write('scraping_history.xml')  # Save the updated XML file
+            tree.write('scraping_history.xml') 
             break
     
     return redirect(reverse('history'))
 @login_required    
 def history(request):
-    tree = ET.parse('scraping_history.xml')  # Update with the correct path to your XML file
+    tree = ET.parse('scraping_history.xml') 
     root = tree.getroot()
     
     sessions = []
@@ -292,7 +311,7 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('/index')  # Redirect to dashboard after registration
+            return redirect('/index') 
     else:
         form = CustomUserCreationForm()
     return render(request, 'scraperapp/register.html', {'form': form})
@@ -306,9 +325,9 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('/index')  # Redirect to dashboard after login
+                return redirect('/index')
             else:
-                form.add_error(None, 'Invalid email or password.')  # Add a general error
+                form.add_error(None, 'Invalid email or password.')
     else:
         form = LoginForm()
     return render(request, 'scraperapp/login.html', {'form': form})
@@ -317,3 +336,31 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('/login') 
+
+@login_required
+def export(request):
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Students"
+
+    headers = ['URL', 'Name', 'Email', 'Title', 'Location', 'Company']
+    ws.append(headers)
+
+    students = Person.objects.all()
+
+    for student in students:
+        ws.append([
+            student.url,
+            student.name,
+            student.email,
+            student.title,
+            student.location,
+            student.company.name if student.company else 'N/A' 
+        ])
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=students.xlsx'
+    wb.save(response)
+
+    return response

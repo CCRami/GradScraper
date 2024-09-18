@@ -119,6 +119,30 @@
 </ul>
 
 </div>
+
+<br>
+
+<div class="col-xl-12 col-sm-12 col-12 mb-4 d-flex align-items-center">
+    <form id="searchForm" method="GET" style="display: flex; width: 300px; margin-right: 20px;">
+        <input type="text" class="form-control" name="q" placeholder="Search here" id="searchInput" style="flex: 1; border-radius: 0;">
+        <button class="btn" type="submit" style="border-radius: 0;">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="orderDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Order by Name
+        </button>
+        <div class="dropdown-menu" aria-labelledby="orderDropdown">
+            <a class="dropdown-item" href="?order=asc">A-Z</a>
+            <a class="dropdown-item" href="?order=desc">Z-A</a>
+        </div>
+    </div>
+</div>
+
+
+
 </div>
 <div class="col-xl-12 col-sm-12 col-12 ">
 <div class="card m-0">
@@ -255,18 +279,16 @@
 
 <script>
     $('#addteam').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var companyId = button.data('company-id'); // Extract company ID from data attribute
+        var button = $(event.relatedTarget); 
+        var companyId = button.data('company-id'); 
 
         var modal = $(this);
         var teamMembersList = modal.find('#team-members-list');
         
-        // Clear previous members
         teamMembersList.empty();
-        
-        // Fetch members via AJAX
+
         $.ajax({
-            url: '/get_company_members/', // Adjust the URL to your Django view
+            url: '/get_company_members/',
             method: 'GET',
             data: {
                 'company_id': companyId
@@ -316,10 +338,8 @@
         const matchUrlPrefix = "https://media.licdn.com/dms/image/v2/D4D03AQHoHh3c5w12xA/";
         const replacementUrl = "{% static 'img/user.jpg' %}";
 
-        // Get all employee images by their IDs
         const images = document.querySelectorAll("[id^='employee-img-']");
 
-        // Loop through the images and update the src if it matches the URL prefix
         images.forEach(function(image) {
             const imgUrl = image.src;
             if (imgUrl.startsWith(matchUrlPrefix)) {

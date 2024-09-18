@@ -225,7 +225,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             var chartData = {{ chart_data|safe }};
             
-            var maxDataValue = Math.max(...chartData.data) + 1; // Calculate max data value to adjust y-axis
+            var maxDataValue = Math.max(...chartData.data) + 1;
         
             var options = {
                 series: [{
@@ -234,7 +234,7 @@
                 }],
                 chart: {
                     type: 'bar',
-                    height: 250 // Increased height to give more space for labels
+                    height: 250 
                 },
                 plotOptions: {
                     bar: {
