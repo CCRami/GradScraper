@@ -88,7 +88,7 @@ def scrape_linkedin_task(st_num, year):
 
         profiles_per_page = 2  # Number of profiles visible per scroll/page
         #total_scrolls = (st_num * profiles_per_page) + 1  # Calculate the required scrolls
-        total_scrolls = 5
+        total_scrolls = 7
         last_height = driver.execute_script("return document.body.scrollHeight")
 
         for i in range(total_scrolls):

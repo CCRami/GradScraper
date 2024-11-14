@@ -218,9 +218,9 @@ def index(request):
     total_salary = included_employees * average_salary
 
     if total_salary >= Decimal(1_000_000):
-        total_salary_display = f"{total_salary/Decimal(1_000_000):.1f}M"
+        total_salary_display = f"{total_salary / Decimal(1_000_000):.1f}M"
     else:
-        total_salary_display = f"{total_salary:.0f}"
+        total_salary_display = f"{total_salary:,.0f}".replace(",", " ")
 
     company_employee_counts = Company.objects.annotate(employee_count=Count('person')).exclude(
         name__in=['ESPRIT', 'Ecole Supérieure Privée d\'Ingénierie et de Technologies - ESPRIT']
